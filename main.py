@@ -16,6 +16,10 @@ messages=[
     }
 ]
 new_response = client.chat.completions.create(model="openai/gpt-oss-20b:free",messages=messages)
+if not new_response.usage:
+    raise Exception("usage api failure")
+print(f"Prompt tokens: {new_response.usage.prompt_tokens}")
+print(f"Response tokens: {new_response.usage.completion_tokens}")
 print(new_response.choices[0].message.content)
 def main():
     print("Hello from ai-agent!")
