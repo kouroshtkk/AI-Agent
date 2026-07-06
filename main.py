@@ -1,6 +1,10 @@
 import os
 from openai import OpenAI
 from dotenv import load_dotenv
+import argparse
+parser = argparse.ArgumentParser(description="Chatbot")
+parser.add_argument("user_prompt",type=str,help="User prompt")
+args = parser.parse_args()
 load_dotenv()
 api_key = os.environ.get("OPENROUTER_API_KEY")
 if not api_key:
@@ -12,7 +16,7 @@ client = OpenAI(
 messages=[
     {
         "role": "user",
-        "content": "Why is Boot.dev such a great place to learn backend development? Use one paragraph maximum.",
+        "content": args.user_prompt,
     }
 ]
 new_response = client.chat.completions.create(model="openai/gpt-oss-20b:free",messages=messages)
@@ -21,9 +25,4 @@ if not new_response.usage:
 print(f"Prompt tokens: {new_response.usage.prompt_tokens}")
 print(f"Response tokens: {new_response.usage.completion_tokens}")
 print(new_response.choices[0].message.content)
-def main():
-    print("Hello from ai-agent!")
 
-
-if __name__ == "__main__":
-    main()
