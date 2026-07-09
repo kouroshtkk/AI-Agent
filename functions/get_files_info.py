@@ -19,4 +19,18 @@ def get_files_info(working_directory:str,directory:str)-> str:
             return f'Error: Cannot list "{directory}" as it is outside the permitted working directory'
     except Exception as e:
         print(f"Error: common path error {e}")
-    return f'Success: "{directory}" is within the working directory'
+    try:
+        new_list = os.listdir(target_dir)
+    except Exception as e:
+        print(f"Error: list dir {e}")
+    files_list=[]
+    for item in new_list:
+        try:
+            is_dir = os.path.isdir(target_dir+"/"+item)
+            item_size=os.path.getsize(target_dir+"/"+item)
+        except Exception as e:
+            print(f"Error: get size or is_dir {e}")
+        files_list.append("- "+item+": file_size="+str(item_size)+" bytes, is_dir="+str(is_dir))
+
+    total_str = "\n".join(files_list)
+    return total_str
