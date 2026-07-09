@@ -3,7 +3,7 @@ def write_file(working_directory:str,file_path:str,content:str) -> str:
     try:
         working_dir_path = os.path.abspath(working_directory)
     except Exception as e:
-    print(f"Error: Abs path error {e}")
+        print(f"Error: Abs path error {e}")
     try:
         target_dir = os.path.normpath(os.path.join(working_dir_path,file_path))
     except Exception as e:
