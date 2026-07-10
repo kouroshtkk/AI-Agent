@@ -40,3 +40,27 @@ def run_python_file(
     else:
         return_str+=f"STDOUT: {completed.stdout}, STDERR:{completed.stderr}"
     return return_str
+schema_run_python_file = {
+    "type": "function",
+    "function": {
+        "name": "run_python_file",
+        "description": "runs a python file with the given arguments",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "file_path": {
+                    "type": "string",
+                    "description": "relative path of file that must exist in the working directory"
+                },
+                "args": {
+                    "type": "array",
+                    "description": "list of the arguments as list of strings of python file to run",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": ["file_path"]
+        },
+    },
+}

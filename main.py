@@ -1,7 +1,10 @@
 import os
+import json
 from openai import OpenAI
 from dotenv import load_dotenv
 import argparse
+from prompts import system_prompt
+from call_function import available_functions
 parser = argparse.ArgumentParser(description="Chatbot")
 parser.add_argument("user_prompt",type=str,help="User prompt")
 parser.add_argument("--verbose",action="store_true",help="Enable verbose output")
@@ -18,11 +21,15 @@ client = OpenAI(
 )
 messages=[
     {
+        "role": "system",
+        "content": system_prompt
+    },
+    {
         "role": "user",
         "content": args.user_prompt,
     }
 ]
-new_response = client.chat.completions.create(model="openai/gpt-oss-20b:free",messages=messages)
+new_response = client.chat.completions.create(model="openai/gpt-oss-20b:free",messages=messages,tools=available_functions)
 if not new_response.usage:
     raise Exception("usage api failure")
 if verbose:
@@ -30,4 +37,8 @@ if verbose:
     print(f"Prompt tokens: {new_response.usage.prompt_tokens}")
     print(f"Response tokens: {new_response.usage.completion_tokens}")
 print(new_response.choices[0].message.content)
+if new_response.choices[0].message.tool_calls:
+    for tool_call in new_response.choices[0].message.tool_calls:
+        function_args = json.loads(tool_call.function.arguments or "{}")
+        print(f"Calling function: {tool_call.function.name}({function_args})")
 

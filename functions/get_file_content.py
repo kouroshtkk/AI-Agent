@@ -25,3 +25,20 @@ def get_file_content(working_directory: str,file_path: str) -> str:
     if file.read(1):
         result+= f'[...File "{file_path}" truncated at 10000 characters]'
     return result
+schema_get_file_content = {
+    "type": "function",
+    "function": {
+        "name": "get_file_content",
+        "description": "returns the content of the file at max 10000 characters, file must exits",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "file_path": {
+                    "type": "string",
+                    "description": "path to the file to read"
+                }
+            },
+            "required": ["file_path"]
+        },
+    },
+}
