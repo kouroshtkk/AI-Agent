@@ -14,7 +14,7 @@ def run_python_file(
     try:
         valid_target_dir = os.path.commonpath([working_dir_path,target_dir]) == working_dir_path
         if not valid_target_dir:
-            return f'Error: Cannot list "{file_path}" as it is outside the permitted working directory'
+            return f'Error: Cannot execute "{file_path}" as it is outside the permitted working directory'
     except Exception as e:
         return f"Error: common path error {e}"
     try:
@@ -22,7 +22,7 @@ def run_python_file(
     except Exception as e:
         return f"Error: isfile {e}"
     if not is_file:
-        return f'Error: File not found or is not a regular file: "{file_path}"'
+        return f'Error: "{file_path}" does not exist or is not a regular file'
     if not target_dir.endswith(".py"):
         return f'Error: "{file_path}" is not a Python file'
     command = ["python",target_dir]
