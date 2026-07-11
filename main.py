@@ -4,7 +4,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import argparse
 from prompts import system_prompt
-from call_function import available_functions
+from call_function import available_functions,call_function
 parser = argparse.ArgumentParser(description="Chatbot")
 parser.add_argument("user_prompt",type=str,help="User prompt")
 parser.add_argument("--verbose",action="store_true",help="Enable verbose output")
@@ -40,5 +40,13 @@ print(new_response.choices[0].message.content)
 if new_response.choices[0].message.tool_calls:
     for tool_call in new_response.choices[0].message.tool_calls:
         function_args = json.loads(tool_call.function.arguments or "{}")
-        print(f"Calling function: {tool_call.function.name}({function_args})")
+        if verbose:
+            result_message=call_function(tool_call,True)
+        else:
+            result_message=call_function(tool_call)
+        if not result_message:
+            raise Exception("result empty")
+        if verbose:
+            print(f"->\n {result_message['content']}")
+
 
