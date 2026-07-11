@@ -29,7 +29,7 @@ schema_get_file_content = {
     "type": "function",
     "function": {
         "name": "get_file_content",
-        "description": "reads and returns the content of the one specific file at max 10000 characters, file must exits it is different from listing files!",
+        "description": "gets and reads the content of a file and returns the content of the one specific file (file_path) at max 10000 characters, file must exist it is different from listing files!",
         "parameters": {
             "type": "object",
             "properties": {

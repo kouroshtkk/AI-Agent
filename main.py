@@ -1,3 +1,4 @@
+import sys
 import os
 import json
 from openai import OpenAI
@@ -29,24 +30,29 @@ messages=[
         "content": args.user_prompt,
     }
 ]
-new_response = client.chat.completions.create(model="openai/gpt-oss-20b:free",messages=messages,tools=available_functions)
-if not new_response.usage:
-    raise Exception("usage api failure")
-if verbose:
-    print(f"User prompt: {args.user_prompt}")
-    print(f"Prompt tokens: {new_response.usage.prompt_tokens}")
-    print(f"Response tokens: {new_response.usage.completion_tokens}")
-print(new_response.choices[0].message.content)
-if new_response.choices[0].message.tool_calls:
-    for tool_call in new_response.choices[0].message.tool_calls:
-        function_args = json.loads(tool_call.function.arguments or "{}")
-        if verbose:
-            result_message=call_function(tool_call,True)
-        else:
-            result_message=call_function(tool_call)
-        if not result_message:
-            raise Exception("result empty")
-        if verbose:
-            print(f"->\n {result_message['content']}")
+for _ in range(20):
+    new_response = client.chat.completions.create(model="openrouter/free",messages=messages,tools=available_functions)
+    if not new_response.usage:
+        raise Exception("usage api failure")
+    if verbose:
+        print(f"User prompt: {args.user_prompt}")
+        print(f"Prompt tokens: {new_response.usage.prompt_tokens}")
+        print(f"Response tokens: {new_response.usage.completion_tokens}")
+    messages.append(dict(new_response.choices[0].message))
+    if new_response.choices[0].message.tool_calls:
+        for tool_call in new_response.choices[0].message.tool_calls:
+            function_args = json.loads(tool_call.function.arguments or "{}")
+            if verbose:
+                result_message=call_function(tool_call,True)
+            else:
+                result_message=call_function(tool_call)
+            if not result_message:
+                raise Exception("result empty")
+            if verbose:
+                print(f"->\n {result_message['content']}")
+            messages.append(result_message)
+    else:
+        print(new_response.choices[0].message.content)
+        sys.exit(0)
 
-
+sys.exit(1)
