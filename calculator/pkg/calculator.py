@@ -2,7 +2,6 @@
 
 from collections.abc import Callable
 
-
 class Calculator:
     def __init__(self) -> None:
         self.operators: dict[str, Callable[[float, float], float]] = {
@@ -12,10 +11,10 @@ class Calculator:
             "/": lambda a, b: a / b,
         }
         self.precedence: dict[str, int] = {
-            "+": 1,
-            "-": 1,
-            "*": 2,
-            "/": 2,
+            "+": 3,
+            "-": 3,  # Fixed: Made + and - same precedence
+            "*": 4,  # Fixed: Gave * higher precedence than +
+            "/": 4
         }
 
     def evaluate(self, expression: str) -> float | None:
